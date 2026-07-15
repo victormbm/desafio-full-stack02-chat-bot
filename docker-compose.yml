@@ -1,0 +1,14 @@
+services:
+  backend:
+    build: ./apps/backend
+    ports:
+      - "3001:3001"
+    environment:
+      - PORT=3001
+
+  frontend:
+    build: ./apps/frontend
+    ports:
+      - "8080:80"
+    depends_on:
+      - backend
