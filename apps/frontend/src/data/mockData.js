@@ -30,6 +30,13 @@ export const faqAnswers = [
   },
 ]
 
+export const dashboardStats = [
+  { label: 'Total de consultas', value: '1.284', change: '↑ 12,5% no período', short: 'TC' },
+  { label: 'Taxa de resolução', value: '87,4%', change: '↑ 4,2% no período', short: 'TR' },
+  { label: 'Sem resposta', value: '42', change: '↓ 8,1% no período', short: 'SR' },
+  { label: 'Tempo médio', value: '1,8s', change: 'Dentro da meta', short: 'TM', neutral: true },
+]
+
 export const weeklyQueries = [
   { day: 'Seg', value: 58 },
   { day: 'Ter', value: 72 },

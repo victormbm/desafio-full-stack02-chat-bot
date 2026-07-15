@@ -1,5 +1,6 @@
 import { useState } from 'react'
-import { categories, faqAnswers, quickQuestions } from '../data/mockData.js'
+import { categories, quickQuestions } from '../data/mockData.js'
+import { sendChatMessage } from '../services/chatbotService.js'
 
 const initialMessages = [
   {
@@ -9,27 +10,29 @@ const initialMessages = [
   },
 ]
 
-function findAnswer(question) {
-  const normalizedQuestion = question.toLocaleLowerCase('pt-BR')
-  const match = faqAnswers.find((faq) => faq.terms.some((term) => normalizedQuestion.includes(term)))
-
-  return match?.answer ?? 'Ainda não encontrei uma resposta para essa pergunta. Registrei sua dúvida para que nossa equipe possa analisar e melhorar a base de conhecimento.'
-}
-
 function ChatbotPage() {
   const [messages, setMessages] = useState(initialMessages)
   const [question, setQuestion] = useState('')
+  const [isSending, setIsSending] = useState(false)
 
-  function submitQuestion(text) {
+  async function submitQuestion(text) {
     const cleanQuestion = text.trim()
-    if (!cleanQuestion) return
+    if (!cleanQuestion || isSending) return
 
     setMessages((current) => [
       ...current,
       { id: crypto.randomUUID(), author: 'user', text: cleanQuestion },
-      { id: crypto.randomUUID(), author: 'bot', text: findAnswer(cleanQuestion) },
     ])
     setQuestion('')
+    setIsSending(true)
+
+    const response = await sendChatMessage(cleanQuestion)
+
+    setMessages((current) => [
+      ...current,
+      { id: crypto.randomUUID(), author: 'bot', text: response.answer },
+    ])
+    setIsSending(false)
   }
 
   function handleSubmit(event) {
@@ -84,9 +87,10 @@ function ChatbotPage() {
               value={question}
               placeholder="Digite sua pergunta..."
               aria-label="Digite sua pergunta"
+              disabled={isSending}
               onChange={(event) => setQuestion(event.target.value)}
             />
-            <button className="send-button" type="submit" aria-label="Enviar pergunta">↑</button>
+            <button className="send-button" type="submit" aria-label="Enviar pergunta" disabled={isSending}>↑</button>
           </form>
         </section>
 
