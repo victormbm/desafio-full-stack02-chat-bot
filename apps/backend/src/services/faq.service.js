@@ -1,5 +1,11 @@
 import { faqs } from '../data/faqs.js';
 
+// Um único token isolado em comum (ex.: "quando", "segunda") não basta pra
+// provar relação com a FAQ — precisa de frase inteira batendo (bônus abaixo)
+// ou de pelo menos 2 tokens em comum, senão qualquer palavra do dia a dia
+// que aparece à toa numa keyword vira falso positivo.
+const MIN_MATCH_SCORE = 2;
+
 function normalizeText(text) {
   return text
     .normalize('NFD')
@@ -45,5 +51,5 @@ export function findFaqByQuestion(question) {
     return currentBest;
   }, { faq: null, score: 0 });
 
-  return bestMatch.score > 0 ? bestMatch.faq : null;
+  return bestMatch.score >= MIN_MATCH_SCORE ? bestMatch.faq : null;
 }
