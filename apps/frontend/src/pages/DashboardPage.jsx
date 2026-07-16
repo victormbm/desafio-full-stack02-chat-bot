@@ -17,7 +17,7 @@ function DashboardPage({ isActive }) {
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState(false)
   const mountedRef = useRef(true)
-  const hasLoadedRef = useRef(false)
+  const wasActiveRef = useRef(false)
 
   async function loadDashboard() {
     setIsLoading(true)
@@ -42,10 +42,11 @@ function DashboardPage({ isActive }) {
   }, [])
 
   useEffect(() => {
-    if (isActive && !hasLoadedRef.current) {
-      hasLoadedRef.current = true
+    if (isActive && !wasActiveRef.current) {
       loadDashboard()
     }
+
+    wasActiveRef.current = isActive
   }, [isActive])
 
   const isEmpty = Boolean(dashboardData && isDashboardEmpty(dashboardData))
@@ -58,7 +59,7 @@ function DashboardPage({ isActive }) {
           <h1>Dashboard analítico</h1>
           <p>Acompanhe o desempenho do atendimento e identifique oportunidades de melhoria.</p>
         </div>
-        <span className="period-select">Últimos 7 dias ▾</span>
+        <span className="period-select">Dados registrados ▾</span>
       </header>
 
       {isLoading && (
@@ -171,9 +172,13 @@ function DashboardPage({ isActive }) {
                 </div>
                 <span className="legend"><i className="legend-dot" /> Consultas</span>
               </header>
-              <div className="bar-chart" aria-label="Gráfico de consultas por dia">
+              <div
+                className="bar-chart"
+                aria-label="Gráfico de consultas por dia"
+                style={{ gridTemplateColumns: `repeat(${dashboardData.weeklyQueries.length}, 1fr)` }}
+              >
                 {dashboardData.weeklyQueries.map((item) => (
-                  <div className="bar-column" key={item.day} title={`${item.value * 3} consultas`}>
+                  <div className="bar-column" key={item.date} title={`${item.total} consultas`}>
                     <div className="bar" style={{ height: `${item.value}%` }} />
                     <span className="bar-label">{item.day}</span>
                   </div>
@@ -189,7 +194,12 @@ function DashboardPage({ isActive }) {
                 </div>
               </header>
               <div className="donut-layout">
-                <div className="donut" role="img" aria-label="Distribuição das consultas por categoria">
+                <div
+                  className="donut"
+                  role="img"
+                  aria-label="Distribuição das consultas por categoria"
+                  style={{ background: dashboardData.categoryGradient }}
+                >
                   <div className="donut-center">
                     <strong>{dashboardData.totalQueries}</strong>
                     <span>consultas</span>
