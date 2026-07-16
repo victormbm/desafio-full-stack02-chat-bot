@@ -233,9 +233,10 @@
   padding: 17px 20px;
 }
 
-.bot-avatar {
+.chat-header .bot-avatar {
   width: 39px;
   height: 39px;
+  flex: none;
   display: grid;
   place-items: center;
   border-radius: 12px;
@@ -415,6 +416,21 @@
   border-radius: 17px;
   padding: 19px;
   background: rgba(255, 255, 255, 0.76);
+}
+
+.category-back {
+  display: block;
+  border: 0;
+  margin: 0 0 8px;
+  padding: 0;
+  color: var(--primary-dark);
+  background: transparent;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.category-back:hover {
+  color: var(--primary);
 }
 
 .aside-card h2,

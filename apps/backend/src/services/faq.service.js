@@ -71,7 +71,14 @@ export function getAllFaqs() {
 }
 
 export function getSuggestions() {
-  return { categories, quickQuestions };
+  const categoriesWithQuestions = categories.map((category) => ({
+    ...category,
+    questions: faqs
+      .filter((faq) => faq.category === category.name)
+      .map((faq) => faq.question),
+  }));
+
+  return { categories: categoriesWithQuestions, quickQuestions };
 }
 
 export function findFaqByQuestion(question) {

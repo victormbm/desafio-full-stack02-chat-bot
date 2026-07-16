@@ -16,6 +16,7 @@ function ChatbotPage() {
   const [pendingError, setPendingError] = useState(null)
   const [categories, setCategories] = useState([])
   const [quickQuestions, setQuickQuestions] = useState([])
+  const [selectedCategory, setSelectedCategory] = useState(null)
   const chatMessagesRef = useRef(null)
 
   useEffect(() => {
@@ -68,6 +69,11 @@ function ChatbotPage() {
     askAssistant(pendingError.question)
   }
 
+  function askCategoryQuestion(text) {
+    submitQuestion(text)
+    setSelectedCategory(null)
+  }
+
   function clearChat() {
     if (isSending) return
     setMessages(initialMessages)
@@ -94,7 +100,7 @@ function ChatbotPage() {
       <div className="chat-layout">
         <section className="panel chat-panel" aria-label="Conversa com o assistente">
           <header className="chat-header">
-            <span className="bot-avatar" aria-hidden="true">IA</span>
+            <span className="bot-avatar" aria-hidden="true">A</span>
             <div>
               <strong>Assistente Atende</strong>
               <span>Responde em poucos segundos</span>
@@ -164,21 +170,50 @@ function ChatbotPage() {
 
         <aside className="chat-aside">
           <section className="aside-card">
-            <h2>Explore por categoria</h2>
-            <p>Escolha um assunto para começar.</p>
-            <div className="category-list">
-              {categories.map((category) => (
+            {selectedCategory ? (
+              <>
                 <button
-                  key={category.name}
                   type="button"
-                  className="category-button"
-                  onClick={() => setQuestion(category.name)}
+                  className="category-back"
+                  onClick={() => setSelectedCategory(null)}
                 >
-                  <span className="category-icon" aria-hidden="true">{category.short}</span>
-                  {category.name}
+                  ‹ Explore por categoria
                 </button>
-              ))}
-            </div>
+                <h2>{selectedCategory.name}</h2>
+                <p>Escolha uma pergunta para continuar.</p>
+                <div className="category-list">
+                  {selectedCategory.questions.map((item) => (
+                    <button
+                      key={item}
+                      type="button"
+                      className="category-button"
+                      disabled={isSending}
+                      onClick={() => askCategoryQuestion(item)}
+                    >
+                      {item}
+                    </button>
+                  ))}
+                </div>
+              </>
+            ) : (
+              <>
+                <h2>Explore por categoria</h2>
+                <p>Escolha um assunto para começar.</p>
+                <div className="category-list">
+                  {categories.map((category) => (
+                    <button
+                      key={category.name}
+                      type="button"
+                      className="category-button"
+                      onClick={() => setSelectedCategory(category)}
+                    >
+                      <span className="category-icon" aria-hidden="true">{category.short}</span>
+                      {category.name}
+                    </button>
+                  ))}
+                </div>
+              </>
+            )}
           </section>
         </aside>
       </div>
