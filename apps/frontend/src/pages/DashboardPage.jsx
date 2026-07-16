@@ -2,6 +2,8 @@ import { useEffect, useRef, useState } from 'react'
 import StatCard from '../components/StatCard.jsx'
 import { getDashboardData } from '../services/analyticsService.js'
 
+const UNANSWERED_PAGE_SIZE = 5
+
 function isDashboardEmpty(data) {
   return (
     data.stats.length === 0 &&
@@ -16,6 +18,7 @@ function DashboardPage({ isActive }) {
   const [dashboardData, setDashboardData] = useState(null)
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState(false)
+  const [unansweredPage, setUnansweredPage] = useState(0)
   const mountedRef = useRef(true)
   const wasActiveRef = useRef(false)
 
@@ -25,7 +28,10 @@ function DashboardPage({ isActive }) {
 
     try {
       const data = await getDashboardData()
-      if (mountedRef.current) setDashboardData(data)
+      if (mountedRef.current) {
+        setDashboardData(data)
+        setUnansweredPage(0)
+      }
     } catch {
       if (mountedRef.current) setError(true)
     } finally {
@@ -50,6 +56,13 @@ function DashboardPage({ isActive }) {
   }, [isActive])
 
   const isEmpty = Boolean(dashboardData && isDashboardEmpty(dashboardData))
+  const unansweredQuestions = dashboardData?.unansweredQuestions ?? []
+  const unansweredTotalPages = Math.max(1, Math.ceil(unansweredQuestions.length / UNANSWERED_PAGE_SIZE))
+  const unansweredPageSafe = Math.min(unansweredPage, unansweredTotalPages - 1)
+  const pagedUnansweredQuestions = unansweredQuestions.slice(
+    unansweredPageSafe * UNANSWERED_PAGE_SIZE,
+    (unansweredPageSafe + 1) * UNANSWERED_PAGE_SIZE,
+  )
 
   return (
     <section className="page" aria-busy={isLoading}>
@@ -245,13 +258,35 @@ function DashboardPage({ isActive }) {
                 </div>
               </header>
               <div className="unanswered-list">
-                {dashboardData.unansweredQuestions.map((question) => (
+                {pagedUnansweredQuestions.map((question) => (
                   <div className="unanswered-item" key={question.text}>
                     <p>{question.text}</p>
                     <span>{question.time}</span>
                   </div>
                 ))}
               </div>
+
+              {unansweredTotalPages > 1 && (
+                <div className="pager">
+                  <button
+                    type="button"
+                    className="pager-button"
+                    disabled={unansweredPageSafe === 0}
+                    onClick={() => setUnansweredPage((page) => page - 1)}
+                  >
+                    ‹
+                  </button>
+                  <span className="pager-status">{unansweredPageSafe + 1} / {unansweredTotalPages}</span>
+                  <button
+                    type="button"
+                    className="pager-button"
+                    disabled={unansweredPageSafe === unansweredTotalPages - 1}
+                    onClick={() => setUnansweredPage((page) => page + 1)}
+                  >
+                    ›
+                  </button>
+                </div>
+              )}
             </article>
           </section>
         </>

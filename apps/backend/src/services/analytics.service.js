@@ -2,6 +2,7 @@ import { normalizeText } from './faq.service.js';
 import { getInteractionHistory } from './interaction.service.js';
 
 const MAX_QUESTION_ITEMS = 5;
+const MAX_UNANSWERED_ITEMS = 50;
 
 function normalizeDisplayText(text) {
   return text.replace(/\s+/g, ' ').trim();
@@ -73,7 +74,7 @@ function getUnansweredQuestions(interactions) {
 
       return second.lastAskedAt.localeCompare(first.lastAskedAt);
     })
-    .slice(0, MAX_QUESTION_ITEMS);
+    .slice(0, MAX_UNANSWERED_ITEMS);
 }
 
 function getQueriesByCategory(interactions) {

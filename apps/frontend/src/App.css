@@ -841,6 +841,42 @@
   font-size: 8px;
 }
 
+.pager {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.pager-button {
+  width: 26px;
+  height: 26px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  display: grid;
+  place-items: center;
+  color: #52615c;
+  background: var(--surface);
+  font-size: 13px;
+  transition: 160ms ease;
+}
+
+.pager-button:hover:not(:disabled) {
+  border-color: var(--primary);
+  color: var(--primary-dark);
+}
+
+.pager-button:disabled {
+  opacity: 0.4;
+}
+
+.pager-status {
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 600;
+}
+
 @media (max-width: 1000px) {
   .stats-grid {
     grid-template-columns: repeat(2, 1fr);
