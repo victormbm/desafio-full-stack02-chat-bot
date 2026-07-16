@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { getChatSuggestions, sendChatMessage } from '../services/chatbotService.js'
 
 const initialMessages = [
@@ -16,6 +16,7 @@ function ChatbotPage() {
   const [pendingError, setPendingError] = useState(null)
   const [categories, setCategories] = useState([])
   const [quickQuestions, setQuickQuestions] = useState([])
+  const chatMessagesRef = useRef(null)
 
   useEffect(() => {
     getChatSuggestions()
@@ -25,6 +26,11 @@ function ChatbotPage() {
       })
       .catch(() => {})
   }, [])
+
+  useEffect(() => {
+    const chatMessages = chatMessagesRef.current
+    if (chatMessages) chatMessages.scrollTop = chatMessages.scrollHeight
+  }, [messages, isSending, pendingError])
 
   async function askAssistant(cleanQuestion) {
     setIsSending(true)
@@ -98,7 +104,7 @@ function ChatbotPage() {
             </button>
           </header>
 
-          <div className="chat-messages" aria-live="polite">
+          <div className="chat-messages" aria-live="polite" ref={chatMessagesRef}>
             {messages.map((message) => (
               <div key={message.id} className={`message-row ${message.author}`}>
                 {message.author === 'bot' && <span className="message-avatar">IA</span>}

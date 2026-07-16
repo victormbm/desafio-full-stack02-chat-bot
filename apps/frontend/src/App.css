@@ -219,7 +219,7 @@
 }
 
 .chat-panel {
-  min-height: 620px;
+  height: 900px;
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -1008,7 +1008,7 @@
   }
 
   .chat-panel {
-    min-height: 600px;
+    height: 600px;
   }
 
   .chat-messages {
