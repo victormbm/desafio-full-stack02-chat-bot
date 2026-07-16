@@ -62,6 +62,13 @@ function ChatbotPage() {
     askAssistant(pendingError.question)
   }
 
+  function clearChat() {
+    if (isSending) return
+    setMessages(initialMessages)
+    setQuestion('')
+    setPendingError(null)
+  }
+
   function handleSubmit(event) {
     event.preventDefault()
     submitQuestion(question)
@@ -86,6 +93,9 @@ function ChatbotPage() {
               <strong>Assistente Atende</strong>
               <span>Responde em poucos segundos</span>
             </div>
+            <button type="button" className="clear-chat-button" disabled={isSending} onClick={clearChat}>
+              Limpar chat
+            </button>
           </header>
 
           <div className="chat-messages" aria-live="polite">

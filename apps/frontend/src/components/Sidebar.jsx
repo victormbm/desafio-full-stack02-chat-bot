@@ -36,7 +36,7 @@ function Sidebar({ activePage, isOpen, onNavigate, onClose }) {
           <div className="user-card">
             <span className="user-avatar">VS</span>
             <div className="user-info">
-              <strong>Victor Silva</strong>
+              <strong>Victor Meireles Bandeira de Mello</strong>
               <span>Administrador</span>
             </div>
           </div>
