@@ -92,6 +92,7 @@ function mapCategories(queriesByCategory) {
     )).join(', ')})`
 
   return {
+    total,
     categoryGradient,
     categories: categories.map(({ gradientRange: _gradientRange, ...category }) => category),
   }
@@ -131,7 +132,7 @@ export async function getDashboardData() {
 
   return {
     stats: mapStats(data.summary),
-    totalQueries: formatNumber(data.summary.totalQueries),
+    totalQueries: formatNumber(categoryData.total),
     weeklyQueries: mapTimeline(data.timeline),
     categoryDistribution: categoryData.categories,
     categoryGradient: categoryData.categoryGradient,

@@ -676,11 +676,12 @@
 }
 
 .bar-chart {
-  height: 220px;
+  height: 240px;
   display: grid;
   grid-template-columns: repeat(7, 1fr);
   align-items: end;
   gap: clamp(9px, 2vw, 20px);
+  padding-bottom: 4px;
   border-bottom: 1px solid #e4ebe8;
   background: repeating-linear-gradient(to top, transparent 0 54px, #eef3f1 55px);
 }
@@ -708,8 +709,6 @@
 }
 
 .bar-label {
-  position: relative;
-  top: 25px;
   color: #82908b;
   font-size: 10px;
 }
