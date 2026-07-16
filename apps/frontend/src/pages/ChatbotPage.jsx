@@ -14,6 +14,24 @@ function ChatbotPage() {
   const [messages, setMessages] = useState(initialMessages)
   const [question, setQuestion] = useState('')
   const [isSending, setIsSending] = useState(false)
+  const [pendingError, setPendingError] = useState(null)
+
+  async function askAssistant(cleanQuestion) {
+    setIsSending(true)
+
+    try {
+      const response = await sendChatMessage(cleanQuestion)
+      setMessages((current) => [
+        ...current,
+        { id: crypto.randomUUID(), author: 'bot', text: response.answer },
+      ])
+      setPendingError(null)
+    } catch {
+      setPendingError({ question: cleanQuestion })
+    } finally {
+      setIsSending(false)
+    }
+  }
 
   async function submitQuestion(text) {
     const cleanQuestion = text.trim()
@@ -24,15 +42,14 @@ function ChatbotPage() {
       { id: crypto.randomUUID(), author: 'user', text: cleanQuestion },
     ])
     setQuestion('')
-    setIsSending(true)
+    setPendingError(null)
 
-    const response = await sendChatMessage(cleanQuestion)
+    await askAssistant(cleanQuestion)
+  }
 
-    setMessages((current) => [
-      ...current,
-      { id: crypto.randomUUID(), author: 'bot', text: response.answer },
-    ])
-    setIsSending(false)
+  function retryLastQuestion() {
+    if (!pendingError || isSending) return
+    askAssistant(pendingError.question)
   }
 
   function handleSubmit(event) {
@@ -69,10 +86,35 @@ function ChatbotPage() {
               </div>
             ))}
 
+            {isSending && (
+              <div className="message-row bot">
+                <span className="message-avatar">IA</span>
+                <div className="message-bubble typing">Assistente está digitando...</div>
+              </div>
+            )}
+
+            {!isSending && pendingError && (
+              <div className="message-row bot">
+                <span className="message-avatar">IA</span>
+                <div className="message-bubble error">
+                  <p>Não consegui responder agora. Tente novamente em instantes.</p>
+                  <button type="button" className="quick-question" onClick={retryLastQuestion}>
+                    Tentar novamente
+                  </button>
+                </div>
+              </div>
+            )}
+
             {messages.length === 1 && (
               <div className="quick-questions">
                 {quickQuestions.map((item) => (
-                  <button key={item} type="button" className="quick-question" onClick={() => submitQuestion(item)}>
+                  <button
+                    key={item}
+                    type="button"
+                    className="quick-question"
+                    disabled={isSending}
+                    onClick={() => submitQuestion(item)}
+                  >
                     {item}
                   </button>
                 ))}

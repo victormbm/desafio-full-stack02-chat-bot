@@ -312,6 +312,20 @@
   background: var(--primary);
 }
 
+.message-bubble.typing {
+  color: #8a9692;
+  font-style: italic;
+}
+
+.message-bubble.error {
+  border-color: #e7a14f;
+  background: #fff9f0;
+}
+
+.message-bubble.error p {
+  margin: 0 0 10px;
+}
+
 .quick-questions {
   display: flex;
   flex-wrap: wrap;
