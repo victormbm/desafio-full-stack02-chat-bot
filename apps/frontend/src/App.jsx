@@ -46,7 +46,7 @@ function App() {
           <ChatbotPage />
         </div>
         <div style={{ display: activePage === 'dashboard' ? 'contents' : 'none' }}>
-          <DashboardPage />
+          <DashboardPage isActive={activePage === 'dashboard'} />
         </div>
       </main>
     </div>

@@ -1,24 +1,57 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import StatCard from '../components/StatCard.jsx'
 import { getDashboardData } from '../services/analyticsService.js'
 
-function DashboardPage() {
+function isDashboardEmpty(data) {
+  return (
+    data.stats.length === 0 &&
+    data.weeklyQueries.length === 0 &&
+    data.categoryDistribution.length === 0 &&
+    data.topQuestions.length === 0 &&
+    data.unansweredQuestions.length === 0
+  )
+}
+
+function DashboardPage({ isActive }) {
   const [dashboardData, setDashboardData] = useState(null)
+  const [isLoading, setIsLoading] = useState(false)
+  const [error, setError] = useState(false)
+  const mountedRef = useRef(true)
+  const hasLoadedRef = useRef(false)
+
+  async function loadDashboard() {
+    setIsLoading(true)
+    setError(false)
+
+    try {
+      const data = await getDashboardData()
+      if (mountedRef.current) setDashboardData(data)
+    } catch {
+      if (mountedRef.current) setError(true)
+    } finally {
+      if (mountedRef.current) setIsLoading(false)
+    }
+  }
 
   useEffect(() => {
-    let isCurrent = true
-
-    getDashboardData().then((data) => {
-      if (isCurrent) setDashboardData(data)
-    })
+    mountedRef.current = true
 
     return () => {
-      isCurrent = false
+      mountedRef.current = false
     }
   }, [])
 
+  useEffect(() => {
+    if (isActive && !hasLoadedRef.current) {
+      hasLoadedRef.current = true
+      loadDashboard()
+    }
+  }, [isActive])
+
+  const isEmpty = Boolean(dashboardData && isDashboardEmpty(dashboardData))
+
   return (
-    <section className="page" aria-busy={!dashboardData}>
+    <section className="page" aria-busy={isLoading}>
       <header className="page-heading">
         <div>
           <p className="eyebrow">Visão geral</p>
@@ -28,7 +61,100 @@ function DashboardPage() {
         <span className="period-select">Últimos 7 dias ▾</span>
       </header>
 
-      {dashboardData && (
+      {isLoading && (
+        <>
+          <section className="stats-grid" aria-hidden="true">
+            {[0, 1, 2, 3].map((index) => (
+              <article className="stat-card" key={index}>
+                <div className="stat-top">
+                  <span className="skeleton" style={{ width: '55%', height: 10 }} />
+                  <span className="skeleton" style={{ width: 28, height: 28, borderRadius: 9 }} />
+                </div>
+                <div className="skeleton" style={{ width: '45%', height: 25, margin: '15px 0 7px' }} />
+                <div className="skeleton" style={{ width: '35%', height: 10 }} />
+              </article>
+            ))}
+          </section>
+
+          <section className="dashboard-grid" aria-hidden="true">
+            <article className="chart-card">
+              <header className="chart-header">
+                <div>
+                  <div className="skeleton" style={{ width: 160, height: 15 }} />
+                  <div className="skeleton" style={{ width: 120, height: 11, marginTop: 5 }} />
+                </div>
+              </header>
+              <div className="skeleton" style={{ height: 220, borderRadius: 12 }} />
+            </article>
+
+            <article className="chart-card">
+              <header className="chart-header">
+                <div>
+                  <div className="skeleton" style={{ width: 160, height: 15 }} />
+                  <div className="skeleton" style={{ width: 120, height: 11, marginTop: 5 }} />
+                </div>
+              </header>
+              <div className="donut-layout">
+                <div className="skeleton" style={{ width: 145, height: 145, borderRadius: '50%' }} />
+                <div className="category-legend">
+                  {[0, 1, 2, 3].map((index) => (
+                    <div className="skeleton" style={{ height: 14 }} key={index} />
+                  ))}
+                </div>
+              </div>
+            </article>
+          </section>
+
+          <section className="bottom-grid" aria-hidden="true">
+            <article className="table-card">
+              <header className="table-header">
+                <div>
+                  <div className="skeleton" style={{ width: 180, height: 15 }} />
+                  <div className="skeleton" style={{ width: 140, height: 11, marginTop: 5 }} />
+                </div>
+              </header>
+              <div className="question-list">
+                {[0, 1, 2, 3].map((index) => (
+                  <div className="skeleton" style={{ height: 36, marginBottom: 8, borderRadius: 8 }} key={index} />
+                ))}
+              </div>
+            </article>
+
+            <article className="table-card">
+              <header className="table-header">
+                <div>
+                  <div className="skeleton" style={{ width: 180, height: 15 }} />
+                  <div className="skeleton" style={{ width: 140, height: 11, marginTop: 5 }} />
+                </div>
+              </header>
+              <div className="unanswered-list">
+                {[0, 1, 2].map((index) => (
+                  <div className="skeleton" style={{ height: 46, borderRadius: 8 }} key={index} />
+                ))}
+              </div>
+            </article>
+          </section>
+        </>
+      )}
+
+      {!isLoading && error && (
+        <div className="dashboard-state error-state">
+          <h2>Não foi possível carregar o dashboard</h2>
+          <p>Tivemos um problema ao buscar os dados analíticos. Verifique sua conexão e tente novamente.</p>
+          <button type="button" className="retry-button" onClick={loadDashboard}>
+            Tentar novamente
+          </button>
+        </div>
+      )}
+
+      {!isLoading && !error && dashboardData && isEmpty && (
+        <div className="dashboard-state">
+          <h2>Ainda não há dados suficientes</h2>
+          <p>Assim que houver interações registradas, as análises do dashboard aparecerão aqui.</p>
+        </div>
+      )}
+
+      {!isLoading && !error && dashboardData && !isEmpty && (
         <>
           <section className="stats-grid" aria-label="Indicadores principais">
             {dashboardData.stats.map((stat) => (
