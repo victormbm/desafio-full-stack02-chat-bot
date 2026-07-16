@@ -6,7 +6,7 @@ import { faqs } from '../data/faqs.js';
 // que aparece à toa numa keyword vira falso positivo.
 const MIN_MATCH_SCORE = 2;
 
-function normalizeText(text) {
+export function normalizeText(text) {
   return text
     .normalize('NFD')
     .replace(/[\u0300-\u036f]/g, '')
