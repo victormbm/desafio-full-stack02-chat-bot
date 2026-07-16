@@ -42,7 +42,12 @@ function App() {
           <span className="mobile-spacer" aria-hidden="true" />
         </header>
 
-        {activePage === 'chatbot' ? <ChatbotPage /> : <DashboardPage />}
+        <div style={{ display: activePage === 'chatbot' ? 'contents' : 'none' }}>
+          <ChatbotPage />
+        </div>
+        <div style={{ display: activePage === 'dashboard' ? 'contents' : 'none' }}>
+          <DashboardPage />
+        </div>
       </main>
     </div>
   )
