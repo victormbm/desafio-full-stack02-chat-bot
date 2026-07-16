@@ -1,4 +1,5 @@
 import { findFaqByQuestion, getAllFaqs } from '../services/faq.service.js';
+import { recordInteraction } from '../services/interaction.service.js';
 
 export function listFaqs(_req, res) {
   res.json(getAllFaqs());
@@ -16,20 +17,14 @@ export function askQuestion(req, res) {
   }
 
   const matchedFaq = findFaqByQuestion(question);
-
-  if (!matchedFaq) {
-    return res.json({
-      question,
-      answer: null,
-      matched: false,
-      category: null,
-    });
-  }
-
-  return res.json({
+  const response = {
     question,
-    answer: matchedFaq.answer,
-    matched: true,
-    category: matchedFaq.category,
-  });
+    answer: matchedFaq?.answer ?? null,
+    matched: Boolean(matchedFaq),
+    category: matchedFaq?.category ?? null,
+  };
+
+  recordInteraction(response);
+
+  return res.json(response);
 }

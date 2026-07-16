@@ -1,8 +1,9 @@
 import { Router } from 'express';
-import { getSummary } from '../controllers/analytics.controller.js';
+import { getSummary, listInteractions } from '../controllers/analytics.controller.js';
 
 const router = Router();
 
 router.get('/summary', getSummary);
+router.get('/interactions', listInteractions);
 
 export default router;
