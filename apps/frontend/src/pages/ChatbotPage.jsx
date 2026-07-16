@@ -1,6 +1,5 @@
-import { useState } from 'react'
-import { categories, quickQuestions } from '../data/mockData.js'
-import { sendChatMessage } from '../services/chatbotService.js'
+import { useEffect, useState } from 'react'
+import { getChatSuggestions, sendChatMessage } from '../services/chatbotService.js'
 
 const initialMessages = [
   {
@@ -15,6 +14,17 @@ function ChatbotPage() {
   const [question, setQuestion] = useState('')
   const [isSending, setIsSending] = useState(false)
   const [pendingError, setPendingError] = useState(null)
+  const [categories, setCategories] = useState([])
+  const [quickQuestions, setQuickQuestions] = useState([])
+
+  useEffect(() => {
+    getChatSuggestions()
+      .then((suggestions) => {
+        setCategories(suggestions.categories)
+        setQuickQuestions(suggestions.quickQuestions)
+      })
+      .catch(() => {})
+  }, [])
 
   async function askAssistant(cleanQuestion) {
     setIsSending(true)

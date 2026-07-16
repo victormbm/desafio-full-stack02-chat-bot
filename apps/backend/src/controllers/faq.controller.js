@@ -1,8 +1,12 @@
-import { findFaqByQuestion, getAllFaqs } from '../services/faq.service.js';
+import { findFaqByQuestion, getAllFaqs, getSuggestions } from '../services/faq.service.js';
 import { recordInteraction } from '../services/interaction.service.js';
 
 export function listFaqs(_req, res) {
   res.json(getAllFaqs());
+}
+
+export function getFaqSuggestions(_req, res) {
+  res.json(getSuggestions());
 }
 
 export function askQuestion(req, res) {

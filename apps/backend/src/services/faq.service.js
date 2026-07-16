@@ -1,4 +1,4 @@
-import { faqs } from '../data/faqs.js';
+import { categories, faqs, quickQuestions } from '../data/faqs.js';
 
 // Um único token isolado em comum (ex.: "quando", "segunda") não basta pra
 // provar relação com a FAQ — precisa de frase inteira batendo (bônus abaixo)
@@ -36,6 +36,10 @@ function calculateScore(question, keywords) {
 
 export function getAllFaqs() {
   return faqs;
+}
+
+export function getSuggestions() {
+  return { categories, quickQuestions };
 }
 
 export function findFaqByQuestion(question) {

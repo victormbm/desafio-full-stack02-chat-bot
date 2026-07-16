@@ -1,5 +1,15 @@
-const API_URL = 'http://localhost:3001/api/faq/ask'
+const BASE_URL = 'http://localhost:3001/api/faq'
 const fallbackAnswer = 'Ainda não encontrei uma resposta para essa pergunta. Registrei sua dúvida para que nossa equipe possa analisar e melhorar a base de conhecimento.'
+
+export async function getChatSuggestions() {
+  const response = await fetch(`${BASE_URL}/suggestions`)
+
+  if (!response.ok) {
+    throw new Error('Falha ao carregar sugestões do assistente.')
+  }
+
+  return response.json()
+}
 
 export async function sendChatMessage(message) {
   const question = message.trim()
@@ -12,7 +22,7 @@ export async function sendChatMessage(message) {
     }
   }
 
-  const response = await fetch(API_URL, {
+  const response = await fetch(`${BASE_URL}/ask`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ question }),

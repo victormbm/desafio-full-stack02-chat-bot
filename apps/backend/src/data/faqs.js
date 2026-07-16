@@ -1,3 +1,19 @@
+export const categories = [
+  { name: 'Pedidos e entregas', short: 'PE' },
+  { name: 'Pagamentos', short: 'PG' },
+  { name: 'Trocas e devoluções', short: 'TD' },
+  { name: 'Minha conta', short: 'MC' },
+];
+
+export const quickQuestions = [
+  'Como acompanho meu pedido?',
+  'Quais são as formas de pagamento?',
+  'Como solicito uma troca?',
+  'Como recupero minha senha?',
+  'Qual é o prazo de entrega?',
+  'Como faço uma devolução?',
+];
+
 export const faqs = [
   {
     id: 'faq-1',
