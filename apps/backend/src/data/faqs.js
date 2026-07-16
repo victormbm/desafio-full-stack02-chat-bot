@@ -4,7 +4,7 @@ export const faqs = [
     question: 'Como acompanho meu pedido?',
     answer: 'Você pode acompanhar seu pedido na área Meus Pedidos. O código de rastreio será exibido após o envio.',
     category: 'Pedidos e entregas',
-    keywords: ['acompanhar pedido', 'rastrear pedido', 'status pedido', 'código rastreio'],
+    keywords: ['acompanhar pedido', 'rastrear pedido', 'status pedido', 'código rastreio', 'pedidos entregas'],
   },
   {
     id: 'faq-2',
@@ -25,7 +25,7 @@ export const faqs = [
     question: 'Quais são as formas de pagamento?',
     answer: 'Aceitamos cartão de crédito, Pix e boleto bancário. As opções disponíveis são exibidas durante a finalização da compra.',
     category: 'Pagamentos',
-    keywords: ['formas pagamento', 'meios pagamento', 'pagar pedido', 'cartão pix boleto'],
+    keywords: ['formas pagamento', 'meios pagamento', 'pagar pedido', 'cartão pix boleto', 'pagamentos'],
   },
   {
     id: 'faq-5',
@@ -46,7 +46,7 @@ export const faqs = [
     question: 'Como solicito uma troca?',
     answer: 'Acesse Meus Pedidos, selecione a compra e escolha a opção Solicitar troca. O prazo para solicitação é de até 7 dias após o recebimento.',
     category: 'Trocas e devoluções',
-    keywords: ['solicitar troca', 'trocar produto', 'quero trocar', 'prazo troca'],
+    keywords: ['solicitar troca', 'trocar produto', 'quero trocar', 'prazo troca', 'trocas devoluções'],
   },
   {
     id: 'faq-8',

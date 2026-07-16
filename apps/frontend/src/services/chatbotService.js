@@ -1,11 +1,5 @@
-import { faqAnswers } from '../data/mockData.js'
-
-const MOCK_DELAY_MS = 350
+const API_URL = 'http://localhost:3001/api/faq/ask'
 const fallbackAnswer = 'Ainda não encontrei uma resposta para essa pergunta. Registrei sua dúvida para que nossa equipe possa analisar e melhorar a base de conhecimento.'
-
-function wait(ms) {
-  return new Promise((resolve) => setTimeout(resolve, ms))
-}
 
 export async function sendChatMessage(message) {
   const question = message.trim()
@@ -18,16 +12,21 @@ export async function sendChatMessage(message) {
     }
   }
 
-  await wait(MOCK_DELAY_MS)
+  const response = await fetch(API_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ question }),
+  })
 
-  const normalizedQuestion = question.toLocaleLowerCase('pt-BR')
-  const match = faqAnswers.find((faq) => (
-    faq.terms.some((term) => normalizedQuestion.includes(term))
-  ))
+  if (!response.ok) {
+    throw new Error('Falha ao consultar o assistente.')
+  }
+
+  const data = await response.json()
 
   return {
-    question,
-    answer: match?.answer ?? fallbackAnswer,
-    matched: Boolean(match),
+    question: data.question,
+    answer: data.matched ? data.answer : fallbackAnswer,
+    matched: data.matched,
   }
 }

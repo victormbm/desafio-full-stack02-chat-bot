@@ -154,12 +154,6 @@ function ChatbotPage() {
               ))}
             </div>
           </section>
-
-          <section className="aside-card help-card">
-            <h2>Não encontrou o que precisa?</h2>
-            <p>Nossa equipe está disponível para dúvidas que exigem atendimento especializado.</p>
-            <button type="button" className="help-link">Falar com atendente →</button>
-          </section>
         </aside>
       </div>
     </section>
