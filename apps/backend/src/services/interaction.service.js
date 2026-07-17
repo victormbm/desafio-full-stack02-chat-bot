@@ -2,14 +2,14 @@ import { randomUUID } from 'node:crypto';
 
 const interactions = [];
 
-export function recordInteraction({ question, answer, matched, category }) {
+export function recordInteraction({ question, answer, matched, category, createdAt }) {
   const interaction = {
     id: randomUUID(),
     question,
     answer,
     matched,
     category,
-    createdAt: new Date().toISOString(),
+    createdAt: createdAt ?? new Date().toISOString(),
   };
 
   interactions.unshift(interaction);
