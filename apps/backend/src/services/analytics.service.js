@@ -99,11 +99,20 @@ function getQueriesByCategory(interactions) {
     ));
 }
 
+function toLocalDateKey(isoString) {
+  const date = new Date(isoString);
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+
+  return `${year}-${month}-${day}`;
+}
+
 function getTimeline(interactions) {
   const queriesByDate = new Map();
 
   interactions.forEach((interaction) => {
-    const date = interaction.createdAt.slice(0, 10);
+    const date = toLocalDateKey(interaction.createdAt);
     queriesByDate.set(date, (queriesByDate.get(date) ?? 0) + 1);
   });
 
@@ -112,8 +121,7 @@ function getTimeline(interactions) {
     .sort((first, second) => first.date.localeCompare(second.date));
 }
 
-export function getAnalyticsSummary() {
-  const interactions = getInteractionHistory();
+export function buildAnalyticsSummary(interactions) {
   const totalQueries = interactions.length;
   const answeredQueries = interactions.filter((interaction) => interaction.matched === true).length;
   const unansweredQueries = totalQueries - answeredQueries;
@@ -133,4 +141,8 @@ export function getAnalyticsSummary() {
     queriesByCategory: getQueriesByCategory(interactions),
     timeline: getTimeline(interactions),
   };
+}
+
+export function getAnalyticsSummary() {
+  return buildAnalyticsSummary(getInteractionHistory());
 }
