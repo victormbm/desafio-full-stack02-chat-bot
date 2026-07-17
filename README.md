@@ -7,8 +7,14 @@
 ![Docker](https://img.shields.io/badge/Docker-Compose-2496ED?logo=docker&logoColor=white)
 
 ## Sobre o projeto
+  O **desafio02-fullstack** é uma aplicação full stack dividida em dois módulos:
 
-## Demonstração
+- **Chatbot:** encontra respostas em uma base de FAQs, sugere perguntas por categoria e registra consultas respondidas ou não respondidas.
+- **Dashboard:** exibe total de consultas, taxa de resolução, perguntas frequentes, perguntas sem resposta, distribuição por categoria e evolução das interações.
+
+O projeto também conta com layout responsivo, estados de carregamento e erro, API REST, testes automatizados e execução completa com Docker.
+
+## Telas
 
 ### Chatbot
 
@@ -18,12 +24,7 @@
 
 ![Dashboard analítico](docs/screenshots/dashboard.png)
 
-O **desafio02-fullstack** é uma aplicação full stack dividida em dois módulos:
 
-- **Chatbot:** encontra respostas em uma base de FAQs, sugere perguntas por categoria e registra consultas respondidas ou não respondidas.
-- **Dashboard:** exibe total de consultas, taxa de resolução, perguntas frequentes, perguntas sem resposta, distribuição por categoria e evolução das interações.
-
-O projeto também conta com layout responsivo, estados de carregamento e erro, API REST, testes automatizados e execução completa com Docker.
 
 ## Arquitetura
 
@@ -37,7 +38,7 @@ flowchart LR
     H --> D["Métricas do dashboard"]
 ```
 
-As interações ficam armazenadas **em memória**. Portanto, o histórico é reiniciado quando o backend é encerrado ou reiniciado. O seed existe para facilitar a demonstração do dashboard sem depender de um banco de dados.
+As interações ficam armazenadas **em memória**. Portanto, o histórico é reiniciado quando o backend é encerrado ou reiniciado.
 
 ## Tecnologias
 
@@ -51,54 +52,110 @@ As interações ficam armazenadas **em memória**. Portanto, o histórico é rei
 
 ## Como rodar com Docker
 
-Esta é a forma mais rápida de executar a aplicação completa.
+Esta é a forma recomendada para avaliar a aplicação completa. Antes de começar, confirme que o **Docker Desktop está instalado e em execução**.
 
-### 1. Clone e acesse o projeto
+> **Recomendação para Windows:** faça o clone em um caminho curto e sem sincronização do OneDrive. Pastas com espaços e caracteres acentuados podem causar problemas de resolução de caminho em alguns ambientes Docker. O exemplo abaixo utiliza `C:\Dev`.
 
-```bash
-git clone https://github.com/victormbm/desafio-full-stack02-chat-bot.git desafio02-fullstack
-cd desafio02-fullstack
+### 1. Prepare uma pasta de trabalho
+
+Abra o **Prompt de Comando (CMD)** e execute:
+
+```cmd
+if not exist C:\Dev mkdir C:\Dev
+cd /d C:\Dev
 ```
 
-### 2. Crie o arquivo de ambiente
+### 2. Clone o projeto
 
-No PowerShell:
+```cmd
+git clone https://github.com/victormbm/desafio-full-stack02-chat-bot.git desafio02-fullstack
+```
+
+O repositório será criado em:
+
+```text
+C:\Dev\desafio02-fullstack
+```
+
+### 3. Entre na pasta e confira os arquivos
+
+```cmd
+cd /d C:\Dev\desafio02-fullstack
+dir
+```
+
+Entre os itens listados, devem aparecer:
+
+```text
+apps
+docker-compose.yml
+.env.example
+package.json
+README.md
+```
+
+### 4. Crie o arquivo de ambiente
+
+Se estiver usando o CMD:
+
+```cmd
+copy .env.example .env
+```
+
+Se estiver usando o PowerShell:
 
 ```powershell
 Copy-Item .env.example .env
 ```
 
-No Linux ou macOS:
+#### Seed opcional do backend
 
-```bash
-cp .env.example .env
-```
-
-Configuração disponível:
+Por padrão, o backend inicia sem interações registradas:
 
 ```env
-FRONTEND_PORT=8080
-BACKEND_PORT=3001
 SEED_DEV_DATA=false
 ```
 
-Use `SEED_DEV_DATA=false` para iniciar com o dashboard vazio ou `SEED_DEV_DATA=true` para carregar dados simulados.
+Para iniciar com interações distribuídas pelos últimos sete dias, altere o arquivo `.env`:
 
-### 3. Suba os containers
+```env
+SEED_DEV_DATA=true
+```
+
+Se os containers já estiverem em execução, recrie-os para aplicar a alteração:
 
 ```bash
+docker compose down
 docker compose up --build
 ```
 
-Acesse:
+O seed preenche o histórico em memória utilizado pelo analytics, permitindo verificar os indicadores e gráficos do dashboard desde a inicialização.
+
+### 5. Construa e inicie os containers
+
+```cmd
+docker compose up --build
+```
+
+Na primeira execução, o Docker precisará baixar as imagens e instalar as dependências. Aguarde até o backend ficar saudável e o frontend ser iniciado.
+
+### 6. Acesse a aplicação
 
 - Aplicação: [http://localhost:8080](http://localhost:8080)
 - API: [http://localhost:3001](http://localhost:3001)
 - Health check: [http://localhost:3001/health](http://localhost:3001/health)
 
-Para encerrar e remover os containers:
+O health check deve retornar:
 
-```bash
+```json
+{"status":"ok"}
+```
+
+### 7. Encerre os containers
+
+No terminal em que o Docker está rodando, pressione `Ctrl + C`. Em seguida, remova os containers e a rede criada pelo projeto:
+
+```cmd
 docker compose down
 ```
 
@@ -137,30 +194,6 @@ npm run dev:frontend
 
 O frontend ficará disponível em [http://localhost:5173](http://localhost:5173). Durante o desenvolvimento, o Vite encaminha as chamadas de `/api` para o backend na porta `3001`.
 
-## Dados de demonstração
-
-O Dashboard oferece duas formas de visualização:
-
-- **Dados registrados:** apresenta métricas calculadas a partir das interações reais realizadas no Chatbot.
-- **Dados demonstrativos:** exibe uma semana completa com dados fixos e determinísticos, permitindo avaliar todos os indicadores e gráficos sem depender de vários dias de uso.
-
-Para visualizar os dados demonstrativos, abra o Dashboard e altere o seletor no canto superior direito de **Dados registrados** para **Dados demonstrativos**.
-
-Os dados demonstrativos existem somente no frontend e:
-
-- não são enviados ao backend;
-- não alteram o histórico de interações;
-- não influenciam as métricas reais;
-- não são gerados aleatoriamente.
-
-### Seed opcional do backend
-
-Por padrão, o backend inicia sem interações registradas:
-
-```env
-SEED_DEV_DATA=false
-```
-
 ## Testes automatizados
 
 Os testes do backend cobrem o mecanismo de busca das FAQs e os cálculos do analytics.
@@ -189,7 +222,7 @@ Atualmente, a suíte possui **16 testes**:
 - 8 testes do serviço de analytics;
 - 8 testes de correspondência das FAQs.
 
-O seed e os testes têm objetivos diferentes: `SEED_DEV_DATA=true` preenche a interface para uma validação visual, enquanto `npm test` verifica automaticamente as regras da aplicação.
+Os testes não dependem do seed: `npm test` valida diretamente as regras dos serviços de FAQ e analytics.
 
 ## Qualidade e build
 
