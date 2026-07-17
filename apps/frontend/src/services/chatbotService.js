@@ -1,4 +1,4 @@
-const BASE_URL = 'http://localhost:3001/api/faq'
+const BASE_URL = '/api/faq'
 const fallbackAnswer = 'Ainda não encontrei uma resposta para essa pergunta. Registrei sua dúvida para que nossa equipe possa analisar e melhorar a base de conhecimento.'
 
 export async function getChatSuggestions() {

@@ -1,4 +1,4 @@
-const API_URL = 'http://localhost:3001/api/analytics/summary'
+const API_URL = '/api/analytics/summary'
 const CATEGORY_COLORS = ['#126e5a', '#46ad8c', '#8fd4bc', '#d5eee6']
 
 function formatNumber(value, maximumFractionDigits = 0) {

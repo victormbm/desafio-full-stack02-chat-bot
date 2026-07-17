@@ -1,12 +1,23 @@
-FROM node:24-alpine
+FROM node:24-alpine AS dependencies
 
 WORKDIR /app
 
 COPY package*.json ./
-RUN npm install --omit=dev
+COPY apps/backend/package.json ./apps/backend/package.json
+COPY apps/frontend/package.json ./apps/frontend/package.json
+RUN npm ci --omit=dev --workspace=backend
 
-COPY . .
+FROM node:24-alpine AS runtime
+
+ENV NODE_ENV=production
+
+WORKDIR /app
+
+COPY --from=dependencies /app/node_modules ./node_modules
+COPY apps/backend ./apps/backend
+
+USER node
 
 EXPOSE 3001
 
-CMD ["npm", "start"]
+CMD ["node", "apps/backend/src/index.js"]
